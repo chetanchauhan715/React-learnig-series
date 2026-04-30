@@ -52,14 +52,30 @@ import { useState } from "react";
  
 function UserCard({name , age , city}){
   const [showDetails , setShowDetails] = useState(false);
+  const [status , setStatus] = useState(false);
 
   function toggleDetails(){
     setShowDetails(prev => !prev);
   }
 
+  function toggleStatus(){
+    setStatus( (prev) => !prev);
+  }
+
   return(
     <div style={ {border:"1px solid black" , padding:"10px", margin:"10px"}}>
       <h2>{name}</h2>
+
+    <p style={ {color:status ? "green" : "red"}}>
+      Status : {status ? "Online " : "Offline"}
+    </p>
+
+    <button onClick={toggleStatus}>
+      {status ? "Go offline" : "Go online"}
+    </button>
+
+<br />
+<br />
 
       <button onClick={toggleDetails}>
         {showDetails ? "Hide-details" : "Show-details"}
