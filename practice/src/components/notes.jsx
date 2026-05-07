@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../NotesApp.css";
 
 export default function NotesApp() {
   const [input, setInput] = useState("");
@@ -13,6 +14,7 @@ export default function NotesApp() {
     const newNote = {
       id: Date.now(),
       text: input,
+      time: new Date().toLocaleTimeString()
     };
 
     setNotes((prev) => [...prev, newNote]);
@@ -31,24 +33,34 @@ export default function NotesApp() {
   }
 
   return (
-    <div style={{ border: "2px solid white", padding: "20px" }}>
+    <div className="container">
       <div>
         <input
+          className="input"
           type="text"
           placeholder="Enter Your Note here ..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-
-          onKeyDown={ (e)=> {
-            if(e.key === "Enter"){
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
               add();
             }
           }}
         />
 
-        <button onClick={add}>Add</button>
+        <button className="btn" onClick={add}>
+          Add
+        </button>
+
+        <p>Characters: {input.length}</p>
+
         <br />
-        {notes.length > 0 && <button onClick={clearAll}>Clear All</button>}
+
+        {notes.length > 0 && (
+          <button className="btn" onClick={clearAll}>
+            Clear All
+          </button>
+        )}
 
         <p>Total Notes : {notes.length}</p>
       </div>
@@ -56,12 +68,15 @@ export default function NotesApp() {
       <div>
         <ul>
           {notes.length === 0 ? (
-            <li>No notes yet</li>
+            <li className="empty-text">No notes yet</li>
           ) : (
             notes.map((note) => (
-              <li style={{ listStyle: "none" }} key={note.id}>
+              <li key={note.id}>
                 {note.text}
-                <button onClick={() => deleteNote(note.id)}>Delete</button>
+                {note.time}
+                <button className="btn" onClick={() => deleteNote(note.id)}>
+                  Delete
+                </button>
               </li>
             ))
           )}
