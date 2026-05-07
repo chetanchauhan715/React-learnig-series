@@ -38,6 +38,12 @@ export default function NotesApp() {
           placeholder="Enter Your Note here ..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
+
+          onKeyDown={ (e)=> {
+            if(e.key === "Enter"){
+              add();
+            }
+          }}
         />
 
         <button onClick={add}>Add</button>
