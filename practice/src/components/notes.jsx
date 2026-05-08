@@ -4,6 +4,7 @@ import "../NotesApp.css";
 export default function NotesApp() {
   const [input, setInput] = useState("");
   const [notes, setNotes] = useState([]);
+  const [search, setSearch] = useState("");
 
   function add() {
     if (input.trim() === "") {
@@ -15,7 +16,7 @@ export default function NotesApp() {
       id: Date.now(),
       text: input,
       time: new Date().toLocaleTimeString(),
-      completed:false
+      completed: false,
     };
 
     setNotes((prev) => [...prev, newNote]);
@@ -33,14 +34,14 @@ export default function NotesApp() {
     setNotes([]);
   }
 
-  // check and uncheck note - check box toggle 
-  function toggleCompleted(id){
-    const compeltedNote = notes.map( (note)=>{
-      if(note.id === id){
-       return {
-        ...note , 
-        completed: !note.completed
-       };
+  // check and uncheck note - check box toggle
+  function toggleCompleted(id) {
+    const compeltedNote = notes.map((note) => {
+      if (note.id === id) {
+        return {
+          ...note,
+          completed: !note.completed,
+        };
       } else {
         return note;
       }
@@ -48,11 +49,16 @@ export default function NotesApp() {
     setNotes(compeltedNote);
   }
 
-
+  // filtered notes
+  const filteredNotes = notes.filter((note) => {
+    return note.text.toLowerCase().includes(search.toLowerCase());
+  });
 
   return (
     <div className="container">
-      <div>
+      <h1>Notes App</h1>
+
+      <div className="input-container">
         <input
           className="input"
           type="text"
@@ -70,43 +76,66 @@ export default function NotesApp() {
           Add
         </button>
 
+        {/* Characters count */}
         <p>Characters: {input.length}</p>
 
-        <br />
+        {/* search */}
+        <input
+          className="input search-input"
+          type="text"
+          placeholder="Serch Note .."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <p>Total Notes : {notes.length}</p>
+
+        {/* <br /> */}
 
         {notes.length > 0 && (
           <button className="btn" onClick={clearAll}>
             Clear All
           </button>
         )}
-
-        <p>Total Notes : {notes.length}</p>
       </div>
 
-      <div>
-        <ul>
-          {notes.length === 0 ? (
-            <li className="empty-text">No notes yet</li>
-          ) : (
-            notes.map((note) => (
-              <li key={note.id} style={ {textDecoration : note.completed ? "line-through" : "none"}}>
-
-                <input type="checkbox" 
-                onClick={ () => toggleCompleted(note.id)}
+      {/* Notes list */}
+      <ul className="notes-list">
+        {notes.length === 0 ? (
+          <li className="empty-state">No Notes Yet !</li>
+        ) : filteredNotes.length === 0 ? (
+          <li className="empty-text">No Matching Lists</li>
+        ) : (
+          filteredNotes.map((note) => (
+            <li className="note-item" key={note.id}>
+              <div className="left-section">
+                <input
+                  type="checkbox"
+                  checked={note.completed}
+                  onChange={() => toggleCompleted(note.id)}
                 />
 
-                
+                <div>
+                  <p
+                    style={{
+                      textDecoration: note.completed ? "line-through" : "none",
+                    }}
+                  >
+                    {note.text}
+                  </p>
+                  <small className="time">{note.time}</small>
+                </div>
+              </div>
 
-                {note.text}
-                {note.time}
-                <button className="btn" onClick={() => deleteNote(note.id)}>
-                  Delete
-                </button>
-              </li>
-            ))
-          )}
-        </ul>
-      </div>
+              <button
+                className="btn delete-btn"
+                onClick={() => deleteNote(note.id)}
+              >
+                Delete
+              </button>
+            </li>
+          ))
+        )}
+      </ul>
     </div>
   );
 }
