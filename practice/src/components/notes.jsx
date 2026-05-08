@@ -14,7 +14,8 @@ export default function NotesApp() {
     const newNote = {
       id: Date.now(),
       text: input,
-      time: new Date().toLocaleTimeString()
+      time: new Date().toLocaleTimeString(),
+      completed:false
     };
 
     setNotes((prev) => [...prev, newNote]);
@@ -31,6 +32,23 @@ export default function NotesApp() {
   function clearAll() {
     setNotes([]);
   }
+
+  // check and uncheck note - check box toggle 
+  function toggleCompleted(id){
+    const compeltedNote = notes.map( (note)=>{
+      if(note.id === id){
+       return {
+        ...note , 
+        completed: !note.completed
+       };
+      } else {
+        return note;
+      }
+    });
+    setNotes(compeltedNote);
+  }
+
+
 
   return (
     <div className="container">
@@ -71,7 +89,14 @@ export default function NotesApp() {
             <li className="empty-text">No notes yet</li>
           ) : (
             notes.map((note) => (
-              <li key={note.id}>
+              <li key={note.id} style={ {textDecoration : note.completed ? "line-through" : "none"}}>
+
+                <input type="checkbox" 
+                onClick={ () => toggleCompleted(note.id)}
+                />
+
+                
+
                 {note.text}
                 {note.time}
                 <button className="btn" onClick={() => deleteNote(note.id)}>
